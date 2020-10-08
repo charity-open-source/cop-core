@@ -1,7 +1,13 @@
-/// Flutter code sample for SingleChildScrollView
+/// Flutter code sample for BottomNavigationBar
 
-// In this example, the column becomes either as big as viewport, or as big as
-// the contents, whichever is biggest.
+// This example shows a [BottomNavigationBar] as it is used within a [Scaffold]
+// widget. The [BottomNavigationBar] has three [BottomNavigationBarItem]
+// widgets and the [currentIndex] is set to index 0. The selected item is
+// amber. The `_onItemTapped` function changes the selected item's index
+// and displays a corresponding message in the center of the [Scaffold].
+//
+// ![A scaffold with a bottom navigation bar containing three bottom navigation
+// bar items. The first one is selected.](https://flutter.github.io/assets-for-api-docs/assets/material/bottom_navigation_bar.png)
 
 import 'package:flutter/material.dart';
 
@@ -15,52 +21,72 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: _title,
-      home: MyStatelessWidget(),
+      home: MyStatefulWidget(),
     );
   }
 }
 
-/// This is the stateless widget that the main application instantiates.
-class MyStatelessWidget extends StatelessWidget {
-  MyStatelessWidget({Key key}) : super(key: key);
+/// This is the stateful widget that the main application instantiates.
+class MyStatefulWidget extends StatefulWidget {
+  MyStatefulWidget({Key key}) : super(key: key);
+
+  @override
+  _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
+}
+
+/// This is the private State class that goes with MyStatefulWidget.
+class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+  int _selectedIndex = 0;
+  static const TextStyle optionStyle =
+      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  static const List<Widget> _widgetOptions = <Widget>[
+    Text(
+      'Lets develop it!',
+      style: optionStyle,
+    ),
+    Text(
+      'Goodness makers:',
+      style: optionStyle,
+    ),
+    Text(
+      'The needy:',
+      style: optionStyle,
+    ),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTextStyle(
-      style: Theme.of(context).textTheme.bodyText2,
-      child: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints viewportConstraints) {
-          return SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: viewportConstraints.maxHeight,
-              ),
-              child: IntrinsicHeight(
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      // A fixed-height child.
-                      color: const Color(0xffeeee00), // Yellow
-                      height: 120.0,
-                      alignment: Alignment.center,
-                      child: const Text('Open Charity'),
-                    ),
-                    Expanded(
-                      // A flexible child that will grow to fit the viewport but
-                      // still be at least as big as necessary to fit its contents.
-                      child: Container(
-                        color: const Color(0xffee0000), // Red
-                        height: 120.0,
-                        alignment: Alignment.center,
-                        child: const Text('Welcome to open charity!!!'),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Charity Open Source'),
+      ),
+      body: Center(
+        child: _widgetOptions.elementAt(_selectedIndex),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.accessibility_new),
+            label: 'We help',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.emoji_people),
+            label: 'Needy',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.amber[800],
+        onTap: _onItemTapped,
       ),
     );
   }
